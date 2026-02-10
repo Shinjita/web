@@ -15,8 +15,6 @@ Link: https://shinjita.github.io/interactive-web-gis-map/
 - 🎨 Custom styling using CSS  
 - 🌐 Built entirely with client-side technologies  
 
----
-
 ## Technologies Used
 
 - **Mapping Library:** Mapbox GL JS  
