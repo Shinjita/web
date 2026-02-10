@@ -3,7 +3,7 @@
 This project demonstrates the development of an interactive Web GIS application using Mapbox GL JS, combining spatial data, front-end web technologies, and user-driven interaction. The application visualises fast-food outlet locations in Victoria, Australia, using an interactive map paired with a dynamic sidebar list.
 
 The project showcases how spatial data can be transformed into a user-friendly web mapping interface, supporting exploration, navigation, and information retrieval—a core skill in modern Web GIS, urban informatics, and spatial data communication.
-Link:https://shinjita.github.io/interactive-web-gis-map/
+Link: https://shinjita.github.io/interactive-web-gis-map/
 
 Key Features
 
