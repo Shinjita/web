@@ -2,8 +2,6 @@
 
 A GIS-grade spatial accessibility dashboard for analysing fast food restaurant access using network-based travel time and multi-criteria scoring.
 
-![Dashboard Preview](preview.png)
-
 ## Overview
 
 This browser-based dashboard evaluates urban food accessibility by combining real-time business data,network routing, and spatial analysis — no desktop GIS software required.
@@ -57,5 +55,5 @@ Use the Export panel (top-left of the map) to download results as a CSV spreadsh
 
 **Shinjita Das**  
 PhD Candidate & Research Associate, RMIT University  
-[LinkedIn](https://linkedin.com/in/shinjitadas-2365a3185) · 
+[LinkedIn]([https://www.linkedin.com/in/shinjita-das-2365a3185/?skipRedirect=true]) · 
 
