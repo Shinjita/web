@@ -1,28 +1,76 @@
-# Interactive Web GIS Map of Fast-Food Outlets (Mapbox GL JS)
+# Urban Food Accessibility Dashboard
 
-This project demonstrates the development of an interactive Web GIS application using Mapbox GL JS, combining spatial data, front-end web technologies, and user-driven interaction. The application visualises fast-food outlet locations in Victoria, Australia, using an interactive map paired with a dynamic sidebar list.
+A GIS-grade spatial accessibility dashboard for analysing fast food restaurant access using network-based travel time and multi-criteria scoring.
 
-The project showcases how spatial data can be transformed into a user-friendly web mapping interface, supporting exploration, navigation, and information retrieval—a core skill in modern Web GIS, urban informatics, and spatial data communication.
-Link: https://shinjita.github.io/interactive-web-gis-map/
+![Dashboard Preview](preview.png)
 
-## Key Features
+## Overview
 
-- 📍 Interactive map displaying point-based locations  
-- 🗂️ Sidebar listing synced with map features  
-- ✈️ Fly-to navigation when a location is selected  
-- 💬 Pop-up information windows  
-- 🧭 Two-way interaction (map → sidebar and sidebar → map)  
-- 🎨 Custom styling using CSS  
-- 🌐 Built entirely with client-side technologies  
+This browser-based dashboard evaluates urban food accessibility by combining 
+real-time business data, network routing, and spatial analysis — no desktop 
+GIS software required.
 
-## Technologies Used
+Built as a personal project to explore web GIS development using the 
+Google Maps Platform APIs.
 
-- **Mapping Library:** Mapbox GL JS  
-- **Spatial Data Format:** GeoJSON  
-- **Front-end:** HTML, CSS, JavaScript  
-- **Styling:** Custom CSS + Mapbox base map  
-- **Architecture:** Client-side Web GIS  
+## Features
 
-## Takeaway
+- 📍 **Location Input** — Address search, GPS, or map click
+- 🚶 **Travel Mode** — Walk or Drive (real network time, not straight-line)
+- 🔵 **Service Area (Isochrone)** — 10, 15, or 20-minute reachability zones
+- 🌡️ **Accessibility Heatmap** — Visual travel time surface across the map
+- 🏆 **Multi-Criteria Scoring** — Ranked by travel time, rating, price & 
+  open status
+- 📊 **Score Breakdown** — Transparent scoring with bonuses and penalties
+- ⚖️ **Compare Tool** — Side-by-side comparison of two locations
+- 📁 **Export** — Download results as CSV or GeoJSON
 
-This project demonstrates the core building blocks of a modern Web GIS application, integrating spatial data, interactive mapping, and front-end logic into a cohesive, user-centred interface. Beyond visualising point locations, it shows how geographic information can be structured, linked, and communicated through dynamic interactions between maps and user interface elements. The workflow highlights practical skills in spatial data handling, client-side rendering, event-driven interaction, and geographic storytelling, forming a foundation for more advanced Web GIS systems such as urban analytics dashboards, location-based services, and digital twin interfaces. Overall, the project reflects how Web GIS can be used to translate spatial data into accessible, actionable insights for urban and spatial decision-making contexts.
+## Tech Stack
+
+| Layer | Tools |
+|-------|-------|
+| Frontend | HTML, CSS, Vanilla JavaScript |
+| Mapping | Google Maps JavaScript API |
+| Data | Google Places API, Google Directions API |
+| Spatial Analysis | Custom isochrone generation, heatmap rendering |
+| Coordinate System | WGS84 |
+
+## Getting Started
+
+1. Clone this repository
+2. Obtain a [Google Maps API Key](https://developers.google.com/maps)
+3. Enable the following APIs in your Google Cloud Console:
+   - Maps JavaScript API
+   - Places API
+   - Directions API
+   - Geocoding API
+4. Open `index.html` in a browser
+5. Enter your API key when prompted
+
+> ⚠️ Your API key is stored locally in your browser. Never commit keys 
+> to version control.
+
+## Scoring Methodology
+
+Places are ranked using a weighted multi-criteria index:
+
+| Criterion | Weight |
+|-----------|--------|
+| Travel Time | 35% |
+| Rating | 30% |
+| Price Level | 20% |
+| Open Status | 15% |
+
+Bonuses and penalties are applied for exceptional ratings, closure status, 
+and distance thresholds.
+
+## Author
+
+**Shinjita Das**  
+PhD Candidate & Research Associate, RMIT University  
+[LinkedIn](https://linkedin.com/in/shinjitadas-2365a3185) · 
+[Portfolio](https://github.com/Shinjita)
+
+---
+*Part of a broader research interest in urban spatial analytics, 
+accessibility modelling, and web GIS development.*
