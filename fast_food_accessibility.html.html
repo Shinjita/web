@@ -1,0 +1,2888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Food Accessibility Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+/* ============================================================================
+   Urban Food Accessibility Dashboard - Styles
+   Premium dark luxury theme with gold accents
+   ============================================================================ */
+
+:root {
+    --lux-black: #050505;
+    --lux-charcoal: #121212;
+    --lux-surface: #1E1E1E;
+    --lux-gold: #D4AF37;
+    --lux-gold-light: #F4C430;
+    --lux-silver: #A3A3A3;
+    --lux-white: #F5F5F5;
+    --green: #10b981;
+    --red: #ef4444;
+    --cyan: #00BFFF;
+    --radius: 0.5rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--lux-black);
+    color: var(--lux-white);
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+    background: rgba(212, 175, 55, 0.3);
+    color: var(--lux-gold);
+}
+
+h1, h2, h3, .font-display {
+    font-family: 'Playfair Display', serif;
+}
+
+.hidden { display: none !important; visibility: hidden !important; }
+.text-gold { color: var(--lux-gold); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.2); border-radius: 3px; }
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(12px);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--lux-charcoal);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 32rem;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212, 175, 55, 0.1);
+}
+
+.modal-large { max-width: 42rem; }
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-silver);
+    font-size: 1.25rem;
+    transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(255, 255, 255, 0.1); color: var(--lux-gold); }
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.modal-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-gold);
+}
+
+.modal-header h2 {
+    font-size: 1.75rem;
+    color: var(--lux-white);
+}
+
+.modal-description {
+    color: var(--lux-silver);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.modal-form input {
+    width: 100%;
+    background: rgba(5, 5, 5, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--lux-white);
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    outline: none;
+    transition: all 0.3s;
+}
+.modal-form input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.modal-form input:focus { 
+    border-color: var(--lux-gold); 
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.error-message {
+    color: #f87171;
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    background: rgba(248, 113, 113, 0.1);
+    border-radius: var(--radius);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.api-requirements {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(5, 5, 5, 0.5);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.api-requirements h3 {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lux-silver);
+    margin-bottom: 0.75rem;
+    font-family: 'Manrope', sans-serif;
+}
+.api-requirements ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.api-requirements li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--lux-silver);
+}
+.api-requirements li svg { color: var(--green); width: 1rem; height: 1rem; }
+
+/* Info Sections */
+.info-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-section {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(5, 5, 5, 0.3);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-number {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--lux-gold);
+    color: var(--lux-black);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info-content h3 {
+    font-size: 1rem;
+    color: var(--lux-white);
+    margin-bottom: 0.25rem;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+}
+
+.info-content p {
+    font-size: 0.875rem;
+    color: var(--lux-silver);
+    line-height: 1.5;
+}
+
+.legend-inline {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.legend-color {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.data-sources {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(5, 5, 5, 0.5);
+    border-radius: var(--radius);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.data-sources h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lux-silver);
+    margin-bottom: 0.75rem;
+    font-family: 'Manrope', sans-serif;
+}
+.data-sources h3 svg { color: var(--lux-gold); width: 1rem; height: 1rem; }
+
+.data-source-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    padding: 0.25rem 0;
+}
+.data-source-item span:first-child { color: var(--lux-silver); }
+.data-source-item span:last-child { color: var(--lux-white); }
+
+/* Loading */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(5, 5, 5, 0.95);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid rgba(212, 175, 55, 0.2);
+    border-top-color: var(--lux-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-overlay p {
+    color: var(--lux-silver);
+    font-size: 0.875rem;
+}
+
+/* Header */
+.header {
+    background: rgba(5, 5, 5, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    backdrop-filter: blur(12px);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-gold);
+}
+
+.header h1 {
+    font-size: 1.25rem;
+    color: var(--lux-white);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.icon-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-silver);
+    transition: all 0.2s;
+}
+.icon-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--lux-gold);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.api-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--lux-silver);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+}
+.status-dot.online { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.status-dot.offline { background: var(--red); animation: pulse 2s infinite; }
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* Main Layout */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 57px);
+}
+
+/* Sidebar */
+.sidebar {
+    height: 45vh;
+    background: rgba(5, 5, 5, 0.95);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    order: 2;
+}
+
+.sidebar-section {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Footer credit styling */
+.sidebar-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--lux-silver);
+    background: rgba(0, 0, 0, 0.3);
+    margin-top: auto;
+}
+
+.search-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.search-input {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(18, 18, 18, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    padding: 0 0.75rem;
+}
+.search-input:focus-within { border-color: rgba(212, 175, 55, 0.5); box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.05); }
+.search-input svg { color: var(--lux-silver); width: 1rem; height: 1rem; flex-shrink: 0; }
+.search-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.625rem 0;
+    font-size: 0.875rem;
+    color: var(--lux-white);
+    outline: none;
+}
+.search-input input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+.location-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.location-row span { font-size: 0.75rem; color: var(--lux-silver); }
+
+.btn-outline {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--lux-gold);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.btn-outline:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--lux-gold);
+}
+.btn-outline svg { width: 0.875rem; height: 0.875rem; }
+
+.location-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius);
+    font-size: 0.75rem;
+    background: rgba(18, 18, 18, 0.5);
+    color: var(--lux-silver);
+}
+.location-status.active {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.location-status svg { width: 0.75rem; height: 0.75rem; }
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lux-silver);
+    margin-bottom: 0.75rem;
+}
+.section-title svg { width: 0.875rem; height: 0.875rem; }
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.filter-item label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--lux-silver);
+    margin-bottom: 0.25rem;
+}
+
+.range-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.range-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+.range-row input[type="range"]::-webkit-slider-runnable-track {
+    background: #262626;
+    height: 4px;
+    border-radius: 2px;
+}
+.range-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: -6px;
+    background: var(--lux-gold);
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--lux-black);
+}
+.range-row span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--lux-white);
+    min-width: 2.5rem;
+    text-align: right;
+}
+
+.filters-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.filter-select {
+    flex: 1;
+}
+.filter-select label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--lux-silver);
+    margin-bottom: 0.25rem;
+}
+.filter-select select {
+    width: 100%;
+    appearance: none;
+    background: rgba(18, 18, 18, 0.8) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23A3A3A3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 0.5rem center;
+    background-size: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--lux-white);
+    cursor: pointer;
+}
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+.toggle-row input { display: none; }
+.toggle-switch {
+    width: 2.25rem;
+    height: 1.25rem;
+    border-radius: 0.625rem;
+    background: var(--lux-charcoal);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    transition: background 0.3s;
+}
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.3s;
+}
+.toggle-row input:checked + .toggle-switch { background: var(--lux-gold); border-color: var(--lux-gold); }
+.toggle-row input:checked + .toggle-switch::after { transform: translateX(1rem); }
+.toggle-row span { font-size: 0.75rem; color: var(--lux-silver); }
+
+.btn-primary {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--lux-gold);
+    color: var(--lux-black);
+    border: none;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+.btn-primary:hover {
+    background: var(--lux-gold-light);
+    box-shadow: 0 6px 30px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-primary svg { width: 1rem; height: 1rem; }
+
+.btn-text {
+    background: transparent;
+    border: none;
+    color: var(--lux-silver);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.5rem;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.btn-text:hover { color: var(--lux-gold); }
+
+/* Results */
+.results-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(18, 18, 18, 0.5);
+}
+.results-header h2 { font-size: 1rem; color: var(--lux-white); }
+.results-header span { font-size: 0.75rem; color: var(--lux-silver); }
+
+.results-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75rem;
+}
+
+.results-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    color: var(--lux-silver);
+    text-align: center;
+}
+.results-empty svg { width: 3rem; height: 3rem; opacity: 0.3; margin-bottom: 1rem; color: var(--lux-gold); }
+.results-empty p { font-size: 0.875rem; line-height: 1.5; }
+
+/* Place Card */
+.place-card {
+    background: rgba(18, 18, 18, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.place-card:hover { 
+    border-color: rgba(212, 175, 55, 0.3); 
+    background: rgba(18, 18, 18, 0.8);
+    transform: translateX(4px);
+}
+.place-card.active {
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.place-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.place-name {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--lux-white);
+    transition: color 0.3s;
+    line-height: 1.3;
+}
+.place-card:hover .place-name { color: var(--lux-gold); }
+.place-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+.place-score {
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius);
+}
+.place-score.high { color: #34d399; background: rgba(16, 185, 129, 0.15); }
+.place-score.medium { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
+.place-score.low { color: #f87171; background: rgba(248, 113, 113, 0.15); }
+.place-rank {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--lux-gold);
+    color: var(--lux-black);
+    font-size: 0.625rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.place-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+.place-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--lux-white);
+}
+.place-rating svg { color: var(--lux-gold); width: 0.875rem; height: 0.875rem; }
+.place-price { color: var(--lux-silver); }
+.place-distance { color: var(--cyan); font-weight: 600; }
+
+.place-travel {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--lux-silver);
+    margin-bottom: 0.5rem;
+}
+.place-travel svg { width: 0.875rem; height: 0.875rem; color: var(--lux-gold); }
+
+.place-status {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.place-status svg { width: 0.875rem; height: 0.875rem; }
+.place-status.open { color: #34d399; }
+.place-status.closed { color: #f87171; }
+.place-status.unknown { color: var(--lux-silver); }
+
+.place-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-small {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--lux-silver);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-small svg { width: 0.875rem; height: 0.875rem; }
+.btn-small:hover {
+    background: rgba(212, 175, 55, 0.2);
+    color: var(--lux-gold);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+.btn-small.active {
+    background: rgba(212, 175, 55, 0.3);
+    color: var(--lux-gold);
+    border-color: var(--lux-gold);
+    font-weight: 500;
+}
+
+/* Score Breakdown */
+.score-breakdown {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.score-breakdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--lux-silver);
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 0;
+    transition: color 0.2s;
+}
+.score-breakdown-toggle:hover { color: var(--lux-gold); }
+.score-breakdown-toggle svg { width: 0.875rem; height: 0.875rem; }
+.score-breakdown-toggle svg:last-child { margin-left: auto; }
+
+.score-breakdown-content {
+    margin-top: 0.5rem;
+    display: none;
+}
+.score-breakdown-content.expanded { display: block; }
+
+.score-components {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+.score-component {
+    background: rgba(5, 5, 5, 0.4);
+    border-radius: var(--radius);
+    padding: 0.5rem;
+}
+.score-component-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+.score-component-header span:first-child {
+    font-size: 0.625rem;
+    color: var(--lux-silver);
+    text-transform: capitalize;
+}
+.score-component-header span:last-child {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--lux-gold);
+}
+.score-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.score-bar-fill {
+    height: 100%;
+    background: var(--lux-gold);
+    transition: width 0.3s;
+}
+
+.score-bonuses, .score-penalties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+.score-badge {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+}
+.score-badge.bonus { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.score-badge.bonus-gold { background: rgba(212, 175, 55, 0.2); color: var(--lux-gold); }
+.score-badge.penalty { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.score-badge.penalty-warn { background: rgba(249, 115, 22, 0.2); color: #fb923c; }
+
+/* Map */
+.map-container {
+    position: relative;
+    height: 55vh;
+    background: var(--lux-charcoal);
+    order: 1;
+}
+
+#map { width: 100%; height: 100%; }
+
+.map-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--lux-charcoal);
+    color: var(--lux-silver);
+    text-align: center;
+    padding: 2rem;
+}
+.map-placeholder svg { width: 4rem; height: 4rem; opacity: 0.3; margin-bottom: 1rem; color: var(--lux-gold); }
+.map-placeholder p { font-size: 1rem; margin-bottom: 0.5rem; }
+.map-placeholder small { font-size: 0.75rem; opacity: 0.7; }
+
+/* Map Panels - Toggles on left, content opens to the right */
+.map-panels-container {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 20;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.panel-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.panel-toggle {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius);
+    background: rgba(5, 5, 5, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-silver);
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.panel-toggle:hover { 
+    border-color: rgba(212, 175, 55, 0.5); 
+    color: var(--lux-gold);
+    transform: translateY(-2px);
+}
+.panel-toggle.active {
+    border-color: var(--lux-gold);
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--lux-gold);
+}
+.panel-toggle svg { width: 1.25rem; height: 1.25rem; }
+
+.panel-contents {
+    position: relative;
+}
+
+.panel-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20rem;
+    background: rgba(5, 5, 5, 0.98);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--lux-white);
+    background: rgba(212, 175, 55, 0.05);
+}
+.panel-header svg { color: var(--lux-gold); width: 1.125rem; height: 1.125rem; }
+
+.panel-body {
+    padding: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.panel-section {
+    margin-bottom: 1.25rem;
+}
+.panel-section:last-child { margin-bottom: 0; }
+
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lux-silver);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-mode {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--lux-silver);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-mode:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+.btn-mode.active {
+    background: var(--lux-gold);
+    color: var(--lux-black);
+    border-color: var(--lux-gold);
+}
+.btn-mode svg { width: 1.125rem; height: 1.125rem; }
+
+.section-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.toggle-btn {
+    width: 2.75rem;
+    height: 1.375rem;
+    border-radius: 0.6875rem;
+    background: var(--lux-charcoal);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+}
+.toggle-btn::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-btn.active { background: var(--lux-gold); border-color: var(--lux-gold); }
+.toggle-btn.active::after { transform: translateX(1.375rem); }
+
+.btn-group-small { gap: 0.25rem; }
+.btn-option {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--lux-silver);
+    transition: all 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.btn-option:hover { background: rgba(255, 255, 255, 0.1); }
+.btn-option.active {
+    background: var(--lux-gold);
+    color: var(--lux-black);
+    font-weight: 600;
+}
+
+.route-info {
+    padding: 0.875rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: var(--radius);
+    margin-top: 1rem;
+}
+.route-info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--lux-white);
+    margin-bottom: 0.5rem;
+}
+.route-info-header svg { color: var(--lux-gold); width: 1.125rem; height: 1.125rem; }
+.route-info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    padding: 0.25rem 0;
+}
+.route-info-row span:first-child { color: var(--lux-silver); }
+.route-info-row span:last-child { color: var(--lux-white); font-weight: 600; }
+
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--lux-silver);
+}
+.legend-box {
+    width: 1.25rem;
+    height: 0.875rem;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-export {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.875rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--lux-silver);
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+.btn-export:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--lux-white);
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateX(4px);
+}
+.btn-export:last-child { margin-bottom: 0; }
+.btn-export svg { width: 1.125rem; height: 1.125rem; }
+
+/* Map Controls */
+.map-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.map-control-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius);
+    background: rgba(5, 5, 5, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-silver);
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.map-control-btn:hover { 
+    border-color: rgba(212, 175, 55, 0.5); 
+    color: var(--lux-gold);
+    transform: translateY(-2px);
+}
+.map-control-btn.active {
+    border-color: var(--lux-gold);
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--lux-gold);
+}
+.map-control-btn svg { width: 1.25rem; height: 1.25rem; }
+
+/* Isochrone Stats */
+.isochrone-stats {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 20;
+    background: rgba(5, 5, 5, 0.98);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: var(--radius);
+    padding: 1rem;
+    min-width: 14rem;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.isochrone-stats h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--lux-silver);
+    margin-bottom: 0.75rem;
+    font-family: 'Manrope', sans-serif;
+}
+.iso-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9375rem;
+    padding: 0.375rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.iso-stat:last-child { border-bottom: none; }
+.iso-stat span:first-child { color: var(--lux-silver); font-size: 0.875rem; }
+.iso-stat-value { font-weight: 700; color: var(--lux-gold); }
+
+/* Compare Panel */
+.compare-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(5, 5, 5, 0.98);
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    z-index: 40;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+    padding: 1.25rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+}
+.compare-panel.visible { transform: translateY(0); }
+
+.compare-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.compare-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.compare-title svg { color: var(--lux-gold); width: 1.5rem; height: 1.5rem; }
+.compare-title h3 { font-size: 1.25rem; color: var(--lux-white); }
+.compare-title span { font-size: 0.875rem; color: var(--lux-silver); font-family: 'Manrope', sans-serif; }
+
+.compare-slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.compare-slot {
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    min-height: 10rem;
+    transition: all 0.3s;
+}
+.compare-slot.empty {
+    background: rgba(18, 18, 18, 0.3);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-silver);
+    text-align: center;
+}
+.compare-slot.empty svg { width: 2.5rem; height: 2.5rem; opacity: 0.3; margin-bottom: 0.75rem; color: var(--lux-gold); }
+.compare-slot.empty p { font-size: 0.8125rem; line-height: 1.5; }
+.compare-slot.filled {
+    background: rgba(18, 18, 18, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+}
+.slot-name { font-weight: 600; color: var(--lux-white); font-size: 1rem; line-height: 1.3; }
+.slot-score {
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.slot-score.high { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.slot-score.medium { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+.slot-score.low { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+
+.slot-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+}
+.slot-meta > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.slot-meta svg { width: 1.125rem; height: 1.125rem; opacity: 0.7; }
+.slot-meta .rating svg { color: var(--lux-gold); opacity: 1; }
+.slot-meta .rating span { color: var(--lux-white); font-weight: 500; }
+.slot-meta .price { color: var(--lux-silver); }
+.slot-meta .distance { color: var(--cyan); font-weight: 500; }
+.slot-meta .travel { color: var(--lux-silver); }
+.slot-meta .status.open { color: #34d399; }
+.slot-meta .status.closed { color: #f87171; }
+
+.slot-remove {
+    margin-top: 1rem;
+    width: 100%;
+    font-size: 0.8125rem;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    transition: all 0.2s;
+}
+.slot-remove:hover { background: rgba(239, 68, 68, 0.25); color: #ef4444; }
+
+/* Responsive */
+@media (min-width: 1024px) {
+    .main-content {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        height: calc(100vh - 65px);
+    }
+    .sidebar { height: 100%; order: 1; }
+    .map-container { height: 100%; order: 2; }
+    .header h1 { font-size: 1.5rem; }
+    .panel-content { width: 22rem; }
+}
+
+@media (max-width: 767px) {
+    .compare-slots { grid-template-columns: 1fr; }
+    .panel-content { width: calc(100vw - 5rem); }
+    .compare-panel { padding: 1rem; }
+    .modal-content { padding: 1.5rem; }
+    .modal-header h2 { font-size: 1.25rem; }
+}
+    </style>
+</head>
+<body>
+    <!-- API Key Modal - Shows immediately on load -->
+    <div id="apiModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon"><i data-lucide="key"></i></div>
+                <h2>API Configuration</h2>
+            </div>
+            <p class="modal-description">Enter your Google Maps API Key to enable interactive mapping, routing, and spatial analysis features.</p>
+            <div class="modal-form">
+                <input type="text" id="apiKeyInput" placeholder="Paste your Google Maps API Key here" data-testid="api-key-input">
+                <div id="apiError" class="error-message hidden"></div>
+                <button id="submitApiKey" class="btn-primary" data-testid="submit-api-key"><i data-lucide="check"></i> Initialize Dashboard</button>
+                <button id="skipApiKey" class="btn-text">Preview interface without API key</button>
+                <button id="clearSavedKey" class="btn-text hidden" style="color:#f87171; margin-top:0.5rem;">Reset saved API key</button>
+            </div>
+            <div class="api-requirements">
+                <h3>Required APIs</h3>
+                <ul>
+                    <li><i data-lucide="check"></i> Maps JavaScript API</li>
+                    <li><i data-lucide="check"></i> Places API</li>
+                    <li><i data-lucide="check"></i> Directions API</li>
+                    <li><i data-lucide="check"></i> Geocoding API</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal-overlay hidden">
+        <div class="modal-content modal-large">
+            <button id="closeInfoModal" class="modal-close"><i data-lucide="x"></i></button>
+            <div class="modal-header">
+                <div class="modal-icon"><i data-lucide="help-circle"></i></div>
+                <h2>About This Dashboard</h2>
+            </div>
+            <p class="modal-description">Fast food accessibility evaluated through network-based travel time and multi-criteria scoring.</p>
+            <div class="info-sections">
+                <div class="info-section">
+                    <div class="info-number">1</div>
+                    <div class="info-content">
+                        <h3>Set Location</h3>
+                        <p>Enter an address, use GPS, or click the map. All analysis originates from this point.</p>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <div class="info-number">2</div>
+                    <div class="info-content">
+                        <h3>Travel Mode</h3>
+                        <p>Choose Walk or Drive. Results use real network travel time - not straight-line distance.</p>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <div class="info-number">3</div>
+                    <div class="info-content">
+                        <h3>Service Area</h3>
+                        <p>Shows areas reachable within 10-20 minutes and the number of places within your selected threshold.</p>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <div class="info-number">4</div>
+                    <div class="info-content">
+                        <h3>Accessibility Heatmap</h3>
+                        <p>Visualises travel time to the nearest fast food location.</p>
+                        <div class="legend-inline">
+                            <span class="legend-item"><span class="legend-color" style="background:#10b981"></span> Green = high access</span>
+                            <span class="legend-item"><span class="legend-color" style="background:#ef4444"></span> Red = low access</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <div class="info-number">5</div>
+                    <div class="info-content">
+                        <h3>Ranking & Score</h3>
+                        <p>Places are ranked across four criteria: travel time, rating, price level, and open status. Select <span class="text-gold">Explain Score</span> to see the full breakdown.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="data-sources">
+                <h3><i data-lucide="database"></i> Data Sources</h3>
+                <div class="data-source-item"><span>Business data</span><span>Google Places API</span></div>
+                <div class="data-source-item"><span>Travel time</span><span>Google Directions API</span></div>
+                <div class="data-source-item"><span>Coordinate system</span><span>WGS84</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p id="loadingMessage">Processing...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon"><i data-lucide="globe"></i></div>
+            <h1><span class="text-gold">Urban Food</span> Accessibility Dashboard</h1>
+        </div>
+        <div class="header-right">
+            <button id="infoBtn" class="icon-btn" title="About" data-testid="info-btn"><i data-lucide="help-circle"></i></button>
+            <button id="apiStatusBtn" class="api-status" title="Click to configure API key" data-testid="api-status-btn" style="background:none;border:none;cursor:pointer;">
+                <span id="apiStatusDot" class="status-dot offline"></span>
+                <span id="apiStatusText">Setup Required</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="search-row">
+                    <div class="search-input">
+                        <i data-lucide="map-pin"></i>
+                        <input type="text" id="addressInput" placeholder="Enter address..." data-testid="address-input">
+                        <button id="searchAddressBtn" class="icon-btn" style="background:transparent;width:auto;height:auto;" data-testid="search-address-btn"><i data-lucide="search"></i></button>
+                    </div>
+                </div>
+                <div class="location-row">
+                    <span>or</span>
+                    <button id="useLocationBtn" class="btn-outline" data-testid="use-location-btn"><i data-lucide="navigation"></i> Use My Location</button>
+                </div>
+                <div id="locationStatus" class="location-status">
+                    <i data-lucide="map-pin"></i>
+                    <span>No location set</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title"><i data-lucide="filter"></i> FILTERS</div>
+                <div class="filters-grid">
+                    <div class="filter-item">
+                        <label>Min Rating</label>
+                        <div class="range-row">
+                            <input type="range" id="ratingFilter" min="0" max="5" step="0.5" value="0" data-testid="rating-filter">
+                            <span id="ratingValue">Any</span>
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <label>Max Distance</label>
+                        <div class="range-row">
+                            <input type="range" id="distanceFilter" min="0.5" max="10" step="0.5" value="5" data-testid="distance-filter">
+                            <span id="distanceValue">5km</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="filters-row">
+                    <div class="filter-select">
+                        <label>Price</label>
+                        <select id="priceFilter" data-testid="price-filter">
+                            <option value="">Any</option>
+                            <option value="1">$</option>
+                            <option value="2">$$</option>
+                            <option value="3">$$$</option>
+                        </select>
+                    </div>
+                    <label class="toggle-row">
+                        <input type="checkbox" id="openNowFilter" data-testid="open-now-filter">
+                        <span class="toggle-switch"></span>
+                        <span>Open</span>
+                    </label>
+                </div>
+                <button id="searchBtn" class="btn-primary" data-testid="search-btn"><i data-lucide="search"></i> Find Restaurants</button>
+            </div>
+
+            <div class="results-section">
+                <div class="results-header">
+                    <h2>Results</h2>
+                    <span id="resultsCount">0 found</span>
+                </div>
+                <div id="resultsList" class="results-list">
+                    <div class="results-empty">
+                        <i data-lucide="utensils"></i>
+                        <p>Enter your API key above to load the map and find restaurants</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Creator Credit -->
+            <div class="sidebar-footer">
+                <span>Created by <span style="color: var(--lux-gold); font-weight: 600;">Shinjita Das</span></span>
+            </div>
+        </aside>
+
+        <!-- Map -->
+        <div class="map-container">
+            <div id="map"></div>
+            
+            <!-- All Map Panels - Grouped together -->
+            <div class="map-panels-container">
+                <div class="panel-toggles">
+                    <button id="layersPanelToggle" class="panel-toggle" title="Layers" data-testid="layers-panel-toggle"><i data-lucide="layers"></i></button>
+                    <button id="exportPanelToggle" class="panel-toggle" title="Export" data-testid="export-panel-toggle"><i data-lucide="download"></i></button>
+                </div>
+                <div class="panel-contents">
+                    <!-- Layers Panel Content -->
+                    <div id="layersPanelContent" class="panel-content hidden" data-testid="layers-panel">
+                        <div class="panel-header"><i data-lucide="layers"></i> Map Layers & Analysis</div>
+                        <div class="panel-body">
+                            <div class="panel-section">
+                                <span class="section-label">Travel Mode</span>
+                                <div class="btn-group">
+                                    <button id="walkModeBtn" class="btn-mode active" data-testid="walk-mode-btn"><i data-lucide="footprints"></i> Walk</button>
+                                    <button id="driveModeBtn" class="btn-mode" data-testid="drive-mode-btn"><i data-lucide="car"></i> Drive</button>
+                                </div>
+                            </div>
+                            <div class="panel-section">
+                                <div class="section-toggle">
+                                    <span class="section-label">Service Area</span>
+                                    <button id="isochroneToggle" class="toggle-btn" data-testid="isochrone-toggle"></button>
+                                </div>
+                                <div id="isochroneOptions" class="hidden">
+                                    <div class="btn-group btn-group-small">
+                                        <button class="btn-option" data-min="10">10 min</button>
+                                        <button class="btn-option active" data-min="15">15 min</button>
+                                        <button class="btn-option" data-min="20">20 min</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-section">
+                                <div class="section-toggle">
+                                    <span class="section-label">Accessibility Heatmap</span>
+                                    <button id="heatmapToggle" class="toggle-btn" data-testid="heatmap-toggle"></button>
+                                </div>
+                                <div id="heatmapOptions" class="hidden">
+                                    <div class="btn-group btn-group-small">
+                                        <button class="btn-option" data-res="low">Low</button>
+                                        <button class="btn-option active" data-res="medium">Medium</button>
+                                        <button class="btn-option" data-res="high">High</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="routeInfo" class="route-info hidden">
+                                <div class="route-info-header"><i data-lucide="route"></i> Active Route</div>
+                                <div class="route-info-row"><span>Distance</span><span id="routeDistance">-</span></div>
+                                <div class="route-info-row"><span>Duration</span><span id="routeDuration">-</span></div>
+                            </div>
+                            <div class="panel-section">
+                                <span class="section-label">Legend</span>
+                                <div class="legend">
+                                    <div class="legend-row"><span class="legend-box" style="background:#10b981"></span> 0-5 min</div>
+                                    <div class="legend-row"><span class="legend-box" style="background:#84cc16"></span> 5-10 min</div>
+                                    <div class="legend-row"><span class="legend-box" style="background:#eab308"></span> 10-15 min</div>
+                                    <div class="legend-row"><span class="legend-box" style="background:#f97316"></span> 15-20 min</div>
+                                    <div class="legend-row"><span class="legend-box" style="background:#ef4444"></span> 20-30 min</div>
+                                    <div class="legend-row"><span class="legend-box" style="background:#7f1d1d"></span> >30 min</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Export Panel Content -->
+                    <div id="exportPanelContent" class="panel-content hidden" data-testid="export-panel">
+                        <div class="panel-header"><i data-lucide="download"></i> Export & Share</div>
+                        <div class="panel-body">
+                            <button id="exportCsvBtn" class="btn-export" data-testid="export-csv-btn"><i data-lucide="file-spreadsheet" style="color:#34d399"></i> Export as CSV</button>
+                            <button id="exportGeoJsonBtn" class="btn-export" data-testid="export-geojson-btn"><i data-lucide="file-json" style="color:#60a5fa"></i> Export as GeoJSON</button>
+                            <button id="copyShareLinkBtn" class="btn-export" data-testid="copy-share-link-btn"><i data-lucide="link-2" style="color:#D4AF37"></i> <span>Copy Share Link</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Controls -->
+            <div class="map-controls">
+                <button id="recenterBtn" class="map-control-btn" title="Recenter" data-testid="recenter-btn"><i data-lucide="target"></i></button>
+                <button id="compareToggleBtn" class="map-control-btn" title="Compare" data-testid="compare-toggle-btn"><i data-lucide="scale"></i></button>
+                <button id="clearRouteBtn" class="map-control-btn hidden" title="Clear route" style="color:#f87171" data-testid="clear-route-btn"><i data-lucide="x"></i></button>
+            </div>
+
+            <!-- Isochrone Stats -->
+            <div id="isochroneStats" class="isochrone-stats hidden">
+                <h4>Service Area (<span id="isoStatMinutes">15</span> min <span id="isoStatMode">walking</span>)</h4>
+                <div class="iso-stat"><span>Restaurants Inside</span><span id="isoStatCount" class="iso-stat-value">0</span></div>
+                <div class="iso-stat"><span>Nearest</span><span id="isoStatNearest" class="iso-stat-value">N/A</span></div>
+            </div>
+
+            <!-- Placeholder -->
+            <div id="mapPlaceholder" class="map-placeholder">
+                <i data-lucide="map-pin"></i>
+                <p>Enter API key to load interactive map</p>
+                <small>Google Maps API key required for full functionality</small>
+            </div>
+        </div>
+    </main>
+
+    <!-- Compare Panel -->
+    <div id="comparePanel" class="compare-panel">
+        <div class="compare-header">
+            <div class="compare-title">
+                <i data-lucide="scale"></i>
+                <h3>Compare Restaurants</h3>
+                <span id="compareCount">(0/2 selected)</span>
+            </div>
+            <button id="closeCompareBtn" class="icon-btn" data-testid="close-compare-btn"><i data-lucide="x"></i></button>
+        </div>
+        <div class="compare-slots">
+            <div id="compareSlot0" class="compare-slot empty">
+                <i data-lucide="scale"></i>
+                <p>Click "Compare" on a restaurant card to add it here</p>
+            </div>
+            <div id="compareSlot1" class="compare-slot empty">
+                <i data-lucide="scale"></i>
+                <p>Click "Compare" on a restaurant card to add it here</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+/**
+ * Urban Food Accessibility Dashboard
+ * A GIS-grade spatial accessibility dashboard for fast food restaurants
+ * Created by Shinjita Das
+ */
+
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+
+const CONFIG = {
+    scoreWeights: { time: 0.35, rating: 0.30, price: 0.20, openNow: 0.15 },
+    scoreBonuses: { openNow: 15, highRating: 10 },
+    scorePenalties: { closed: -10, noRating: -5, farAway: -5 },
+    travelSpeeds: { walking: 5, driving: 40 },
+    isochroneOptions: [10, 15, 20],
+    heatmapResolutions: { low: 0.002, medium: 0.001, high: 0.0005 },
+    heatmapColors: [
+        { min: 0, max: 5, color: '#10b981' },
+        { min: 5, max: 10, color: '#84cc16' },
+        { min: 10, max: 15, color: '#eab308' },
+        { min: 15, max: 20, color: '#f97316' },
+        { min: 20, max: 30, color: '#ef4444' },
+        { min: 30, max: Infinity, color: '#7f1d1d' }
+    ],
+    // Marker colors
+    markers: {
+        open: '#ef4444',      // Red for open stores
+        closed: '#525252',    // Grey for closed/unknown
+        selected: '#D4AF37',  // Gold for selected
+        user: '#D4AF37'       // Gold for user location
+    }
+};
+
+// ============================================================================
+// STATE
+// ============================================================================
+
+const state = {
+    apiKey: localStorage.getItem('googleMapsApiKey') || '',
+    mapsLoaded: false,
+    userLocation: null,
+    places: [],
+    selectedPlace: null,
+    comparePlaces: [],
+    expandedScoreId: null,
+    filters: { minRating: 0, maxDistance: 5, priceLevel: '', openNow: false },
+    travelMode: 'walking',
+    showIsochrone: false,
+    isochroneMinutes: 15,
+    showHeatmap: false,
+    heatmapResolution: 'medium'
+};
+
+// Map references
+let map = null;
+let markers = [];
+let userMarker = null;
+let routeRenderer = null;
+let isochronePolygon = null;
+let heatmapRects = [];
+const heatmapCache = new Map();
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+function calculateDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+function estimateTravelTime(distanceKm, mode) {
+    const speed = CONFIG.travelSpeeds[mode] || CONFIG.travelSpeeds.walking;
+    return (distanceKm / speed) * 60;
+}
+
+function generateIsochronePoints(center, minutes, mode, pointCount = 36) {
+    const speed = CONFIG.travelSpeeds[mode] || CONFIG.travelSpeeds.walking;
+    const radiusKm = (speed * minutes) / 60;
+    const points = [];
+    for (let i = 0; i < pointCount; i++) {
+        const angle = (i / pointCount) * 2 * Math.PI;
+        const variation = 0.9 + Math.random() * 0.2;
+        const r = radiusKm * variation;
+        const lat = center.lat + (r / 111) * Math.cos(angle);
+        const lng = center.lng + (r / (111 * Math.cos(center.lat * Math.PI / 180))) * Math.sin(angle);
+        points.push({ lat, lng });
+    }
+    points.push(points[0]);
+    return points;
+}
+
+function pointInPolygon(point, polygon) {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].lat, yi = polygon[i].lng;
+        const xj = polygon[j].lat, yj = polygon[j].lng;
+        if (((yi > point.lng) !== (yj > point.lng)) &&
+            (point.lat < (xj - xi) * (point.lng - yi) / (yj - yi) + xi)) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
+
+function getHeatmapColor(minutes) {
+    for (const range of CONFIG.heatmapColors) {
+        if (minutes >= range.min && minutes < range.max) return range.color;
+    }
+    return CONFIG.heatmapColors[CONFIG.heatmapColors.length - 1].color;
+}
+
+function calculateAccessibilityScore(place, travelTimeMinutes) {
+    const maxTime = 30;
+    const normalizedTime = Math.min(travelTimeMinutes / maxTime, 1);
+    const timeScore = (1 - normalizedTime) * 100;
+    const ratingScore = place.rating ? (place.rating / 5) * 100 : 50;
+    const priceLevel = place.priceLevel || 2;
+    const priceScore = (1 - (priceLevel - 1) / 3) * 100;
+    const isOpen = place.currentOpeningHours?.openNow;
+    const openNowScore = isOpen ? 100 : 0;
+    
+    let score = CONFIG.scoreWeights.time * timeScore +
+        CONFIG.scoreWeights.rating * ratingScore +
+        CONFIG.scoreWeights.price * priceScore +
+        CONFIG.scoreWeights.openNow * openNowScore;
+    
+    if (isOpen) score += CONFIG.scoreBonuses.openNow;
+    if (place.rating >= 4.5) score += CONFIG.scoreBonuses.highRating;
+    if (isOpen === false) score += CONFIG.scorePenalties.closed;
+    if (!place.rating) score += CONFIG.scorePenalties.noRating;
+    if (place.distance > 3) score += CONFIG.scorePenalties.farAway;
+    
+    return {
+        total: Math.max(0, Math.min(100, Math.round(score))),
+        components: {
+            time: { weight: CONFIG.scoreWeights.time, score: Math.round(timeScore), contribution: Math.round(CONFIG.scoreWeights.time * timeScore) },
+            rating: { weight: CONFIG.scoreWeights.rating, score: Math.round(ratingScore), contribution: Math.round(CONFIG.scoreWeights.rating * ratingScore) },
+            price: { weight: CONFIG.scoreWeights.price, score: Math.round(priceScore), contribution: Math.round(CONFIG.scoreWeights.price * priceScore) },
+            openNow: { weight: CONFIG.scoreWeights.openNow, score: Math.round(openNowScore), contribution: Math.round(CONFIG.scoreWeights.openNow * openNowScore) }
+        },
+        bonuses: { openNow: isOpen ? CONFIG.scoreBonuses.openNow : 0, highRating: place.rating >= 4.5 ? CONFIG.scoreBonuses.highRating : 0 },
+        penalties: { closed: isOpen === false ? CONFIG.scorePenalties.closed : 0, noRating: !place.rating ? CONFIG.scorePenalties.noRating : 0, farAway: place.distance > 3 ? CONFIG.scorePenalties.farAway : 0 }
+    };
+}
+
+// ============================================================================
+// EXPORT FUNCTIONS
+// ============================================================================
+
+function exportToCSV() {
+    if (state.places.length === 0) { alert('No places to export'); return; }
+    const headers = ['Rank', 'Name', 'Rating', 'Reviews', 'Price', 'Distance (km)', 'Travel Time (min)', 'Score', 'Status', 'Address', 'Lat', 'Lng'];
+    const rows = state.places.map((place, index) => [
+        index + 1,
+        place.displayName?.text || place.name,
+        place.rating || 'N/A',
+        place.userRatingCount || 0,
+        place.priceLevel ? '$'.repeat(place.priceLevel) : 'N/A',
+        place.distance?.toFixed(2) || 'N/A',
+        place.travelTime?.toFixed(1) || 'N/A',
+        place.accessibilityScore?.total || 'N/A',
+        place.currentOpeningHours?.openNow ? 'Open' : 'Closed',
+        place.formattedAddress || place.vicinity || '',
+        place.location?.lat || '',
+        place.location?.lng || ''
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+    downloadFile(csvContent, 'text/csv', `urban-food-accessibility-${new Date().toISOString().split('T')[0]}.csv`);
+}
+
+function exportToGeoJSON() {
+    if (state.places.length === 0) { alert('No places to export'); return; }
+    const features = [];
+    if (state.userLocation) {
+        features.push({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [state.userLocation.lng, state.userLocation.lat] },
+            properties: { type: 'user_location', name: 'Your Location' }
+        });
+    }
+    state.places.forEach((place, index) => {
+        features.push({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [place.location?.lng, place.location?.lat] },
+            properties: {
+                type: 'restaurant', rank: index + 1,
+                name: place.displayName?.text || place.name,
+                rating: place.rating, priceLevel: place.priceLevel,
+                distance: place.distance, travelTime: place.travelTime,
+                score: place.accessibilityScore?.total,
+                isOpen: place.currentOpeningHours?.openNow
+            }
+        });
+    });
+    const geojson = { type: 'FeatureCollection', features };
+    downloadFile(JSON.stringify(geojson, null, 2), 'application/json', `urban-food-accessibility-${new Date().toISOString().split('T')[0]}.geojson`);
+}
+
+function downloadFile(content, type, filename) {
+    const blob = new Blob([content], { type });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+}
+
+function copyShareLink() {
+    const params = new URLSearchParams();
+    if (state.userLocation) {
+        params.set('lat', state.userLocation.lat.toFixed(6));
+        params.set('lng', state.userLocation.lng.toFixed(6));
+    }
+    if (map) params.set('z', map.getZoom());
+    params.set('mode', state.travelMode);
+    params.set('rating', state.filters.minRating);
+    params.set('dist', state.filters.maxDistance);
+    if (state.filters.priceLevel) params.set('price', state.filters.priceLevel);
+    if (state.filters.openNow) params.set('open', '1');
+    if (state.isochroneMinutes) params.set('iso', state.isochroneMinutes);
+    if (state.showHeatmap) params.set('heat', '1');
+    if (state.showIsochrone) params.set('isoShow', '1');
+    
+    const link = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    navigator.clipboard.writeText(link).then(() => {
+        const btn = document.getElementById('copyShareLinkBtn');
+        const span = btn.querySelector('span');
+        const originalText = span.textContent;
+        span.textContent = 'Link Copied!';
+        setTimeout(() => { span.textContent = originalText; }, 2000);
+    });
+}
+
+function loadStateFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('lat') && params.has('lng')) {
+        state.userLocation = { lat: parseFloat(params.get('lat')), lng: parseFloat(params.get('lng')) };
+    }
+    state.travelMode = params.get('mode') || 'walking';
+    state.filters.minRating = parseFloat(params.get('rating')) || 0;
+    state.filters.maxDistance = parseFloat(params.get('dist')) || 5;
+    state.filters.priceLevel = params.get('price') || '';
+    state.filters.openNow = params.get('open') === '1';
+    state.isochroneMinutes = parseInt(params.get('iso')) || 15;
+    state.showHeatmap = params.get('heat') === '1';
+    state.showIsochrone = params.get('isoShow') === '1';
+}
+
+// ============================================================================
+// UI FUNCTIONS
+// ============================================================================
+
+function showLoading(message = 'Processing...') {
+    document.getElementById('loadingOverlay').classList.remove('hidden');
+    document.getElementById('loadingMessage').textContent = message;
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+function updateLocationStatus(text, isActive = false) {
+    const status = document.getElementById('locationStatus');
+    status.querySelector('span').textContent = text;
+    status.classList.toggle('active', isActive);
+}
+
+function updateApiStatus(isOnline) {
+    const dot = document.getElementById('apiStatusDot');
+    const text = document.getElementById('apiStatusText');
+    dot.classList.toggle('online', isOnline);
+    dot.classList.toggle('offline', !isOnline);
+    text.textContent = isOnline ? 'GIS Ready' : 'Setup Required';
+}
+
+function updateResultsCount(count) {
+    document.getElementById('resultsCount').textContent = `${count} found`;
+}
+
+function togglePanel(panelId) {
+    const content = document.getElementById(panelId + 'Content');
+    const toggle = document.getElementById(panelId + 'Toggle');
+    const isVisible = !content.classList.contains('hidden');
+    
+    // Close all panels first
+    document.querySelectorAll('.panel-content').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.panel-toggle').forEach(t => t.classList.remove('active'));
+    
+    if (!isVisible) {
+        content.classList.remove('hidden');
+        toggle.classList.add('active');
+    }
+}
+
+function renderPlaceCard(place, index) {
+    const scoreClass = place.accessibilityScore?.total >= 70 ? 'high' : place.accessibilityScore?.total >= 50 ? 'medium' : 'low';
+    const statusClass = place.currentOpeningHours?.openNow === undefined ? 'unknown' : place.currentOpeningHours?.openNow ? 'open' : 'closed';
+    const statusText = place.currentOpeningHours?.openNow === undefined ? 'Hours unknown' : place.currentOpeningHours?.openNow ? 'Open now' : 'Closed';
+    const isComparing = state.comparePlaces.some(p => p?.place_id === place.place_id);
+    const isActive = state.selectedPlace?.place_id === place.place_id;
+    const isExpanded = state.expandedScoreId === place.place_id;
+    
+    return `
+        <div class="place-card ${isActive ? 'active' : ''}" data-place-id="${place.place_id}" data-testid="place-card-${index}">
+            <div class="place-header">
+                <span class="place-name">${place.displayName?.text || place.name}</span>
+                <div class="place-header-right">
+                    ${place.accessibilityScore ? `<span class="place-score ${scoreClass}">${place.accessibilityScore.total}</span>` : ''}
+                    <span class="place-rank">${index + 1}</span>
+                </div>
+            </div>
+            <div class="place-meta">
+                <span class="place-rating"><i data-lucide="star"></i> ${place.rating?.toFixed(1) || 'N/A'}</span>
+                <span class="place-price">${place.priceLevel ? '$'.repeat(place.priceLevel) : 'N/A'}</span>
+                ${place.distance ? `<span class="place-distance">${place.distance < 1 ? (place.distance * 1000).toFixed(0) + 'm' : place.distance.toFixed(1) + 'km'}</span>` : ''}
+            </div>
+            ${place.travelTime ? `<div class="place-travel"><i data-lucide="${state.travelMode === 'driving' ? 'car' : 'footprints'}"></i> ${Math.round(place.travelTime)} min</div>` : ''}
+            <div class="place-status ${statusClass}"><i data-lucide="clock"></i> ${statusText}</div>
+            <div class="place-actions">
+                <button class="btn-small ${isComparing ? 'active' : ''}" data-action="compare" data-testid="compare-btn-${index}">${isComparing ? 'Selected' : 'Compare'}</button>
+                ${state.userLocation ? `<button class="btn-small" data-action="route" data-testid="route-btn-${index}"><i data-lucide="route"></i> Route</button>` : ''}
+            </div>
+            <div class="score-breakdown">
+                <button class="score-breakdown-toggle" data-action="toggle-score"><i data-lucide="info"></i> Explain Score <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}"></i></button>
+                <div class="score-breakdown-content ${isExpanded ? 'expanded' : ''}">${renderScoreBreakdown(place.accessibilityScore)}</div>
+            </div>
+        </div>
+    `;
+}
+
+function renderScoreBreakdown(score) {
+    if (!score) return '';
+    return `
+        <div class="score-components">
+            ${Object.entries(score.components).map(([key, data]) => `
+                <div class="score-component">
+                    <div class="score-component-header"><span>${key}</span><span>+${data.contribution}</span></div>
+                    <div class="score-bar"><div class="score-bar-fill" style="width: ${data.score}%"></div></div>
+                </div>
+            `).join('')}
+        </div>
+        ${(score.bonuses.openNow > 0 || score.bonuses.highRating > 0) ? `
+            <div class="score-bonuses">
+                ${score.bonuses.openNow > 0 ? `<span class="score-badge bonus">+${score.bonuses.openNow} Open Now</span>` : ''}
+                ${score.bonuses.highRating > 0 ? `<span class="score-badge bonus-gold">+${score.bonuses.highRating} High Rating</span>` : ''}
+            </div>
+        ` : ''}
+        ${(score.penalties.closed < 0 || score.penalties.noRating < 0 || score.penalties.farAway < 0) ? `
+            <div class="score-penalties">
+                ${score.penalties.closed < 0 ? `<span class="score-badge penalty">${score.penalties.closed} Closed</span>` : ''}
+                ${score.penalties.noRating < 0 ? `<span class="score-badge penalty-warn">${score.penalties.noRating} No Rating</span>` : ''}
+                ${score.penalties.farAway < 0 ? `<span class="score-badge penalty-warn">${score.penalties.farAway} Far Away</span>` : ''}
+            </div>
+        ` : ''}
+    `;
+}
+
+function renderResultsList() {
+    const list = document.getElementById('resultsList');
+    if (state.places.length === 0) {
+        list.innerHTML = state.apiKey && state.mapsLoaded ? 
+            `<div class="results-empty"><i data-lucide="utensils"></i><p>Set location & click "Find Restaurants" to search</p></div>` :
+            `<div class="results-empty"><i data-lucide="map-pin"></i><p>Enter your API key above to load the map and find restaurants</p></div>`;
+    } else {
+        list.innerHTML = state.places.map((place, index) => renderPlaceCard(place, index)).join('');
+    }
+    lucide.createIcons();
+    attachPlaceCardListeners();
+}
+
+function attachPlaceCardListeners() {
+    document.querySelectorAll('.place-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('[data-action]')) return;
+            const placeId = card.dataset.placeId;
+            const place = state.places.find(p => p.place_id === placeId);
+            if (place) selectPlace(place);
+        });
+        
+        card.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const action = btn.dataset.action;
+                const placeId = card.dataset.placeId;
+                const place = state.places.find(p => p.place_id === placeId);
+                if (!place) return;
+                
+                if (action === 'compare') toggleCompare(place);
+                else if (action === 'route') showRoute(place);
+                else if (action === 'toggle-score') {
+                    state.expandedScoreId = state.expandedScoreId === place.place_id ? null : place.place_id;
+                    renderResultsList();
+                }
+            });
+        });
+    });
+}
+
+function updateComparePanel() {
+    const countEl = document.getElementById('compareCount');
+    countEl.textContent = `(${state.comparePlaces.length}/2 selected)`;
+    
+    [0, 1].forEach(slot => {
+        const slotEl = document.getElementById(`compareSlot${slot}`);
+        const place = state.comparePlaces[slot];
+        
+        if (place) {
+            const scoreClass = place.accessibilityScore?.total >= 70 ? 'high' : place.accessibilityScore?.total >= 50 ? 'medium' : 'low';
+            const statusClass = place.currentOpeningHours?.openNow ? 'open' : 'closed';
+            
+            slotEl.className = 'compare-slot filled';
+            slotEl.innerHTML = `
+                <div class="slot-header">
+                    <span class="slot-name">${place.displayName?.text || place.name}</span>
+                    ${place.accessibilityScore ? `<span class="slot-score ${scoreClass}">Score: ${place.accessibilityScore.total}</span>` : ''}
+                </div>
+                <div class="slot-meta">
+                    <div class="rating"><i data-lucide="star"></i><span>${place.rating?.toFixed(1) || 'N/A'}</span></div>
+                    <div class="price"><i data-lucide="dollar-sign"></i><span>${place.priceLevel ? '$'.repeat(place.priceLevel) : 'N/A'}</span></div>
+                    <div class="distance"><i data-lucide="map-pin"></i><span>${place.distance?.toFixed(1)} km</span></div>
+                    <div class="travel"><i data-lucide="${state.travelMode === 'driving' ? 'car' : 'footprints'}"></i><span>${Math.round(place.travelTime || 0)} min</span></div>
+                    <div class="status ${statusClass}" style="grid-column: span 2"><i data-lucide="clock"></i><span>${place.currentOpeningHours?.openNow ? 'Open now' : 'Closed'}</span></div>
+                </div>
+                <button class="slot-remove" data-slot="${slot}">Remove</button>
+            `;
+        } else {
+            slotEl.className = 'compare-slot empty';
+            slotEl.innerHTML = `<i data-lucide="scale"></i><p>Click "Compare" on a restaurant<br>card to add it here</p>`;
+        }
+    });
+    
+    lucide.createIcons();
+    
+    document.querySelectorAll('.slot-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const slot = parseInt(btn.dataset.slot);
+            state.comparePlaces.splice(slot, 1);
+            updateComparePanel();
+            renderResultsList();
+        });
+    });
+}
+
+function toggleComparePanel(show) {
+    const panel = document.getElementById('comparePanel');
+    const btn = document.getElementById('compareToggleBtn');
+    if (show === undefined) show = !panel.classList.contains('visible');
+    panel.classList.toggle('visible', show);
+    btn.classList.toggle('active', show);
+    if (show) updateComparePanel();
+}
+
+function toggleCompare(place) {
+    const isComparing = state.comparePlaces.some(p => p?.place_id === place.place_id);
+    if (isComparing) {
+        state.comparePlaces = state.comparePlaces.filter(p => p?.place_id !== place.place_id);
+    } else if (state.comparePlaces.length < 2) {
+        state.comparePlaces.push(place);
+        toggleComparePanel(true);
+    } else {
+        state.comparePlaces = [state.comparePlaces[1], place];
+    }
+    updateComparePanel();
+    renderResultsList();
+}
+
+// ============================================================================
+// MAP FUNCTIONS
+// ============================================================================
+
+function initMap() {
+    if (!window.google || !document.getElementById('map')) return;
+    
+    const center = state.userLocation || { lat: 40.7128, lng: -74.006 };
+    
+    map = new google.maps.Map(document.getElementById('map'), {
+        center,
+        zoom: 13,
+        styles: [
+            { elementType: 'geometry', stylers: [{ color: '#1a1a1a' }] },
+            { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a1a' }] },
+            { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+            { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+            { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+            { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#263c3f' }] },
+            { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#38414e' }] },
+            { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#212a37' }] },
+            { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#746855' }] },
+            { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#17263c' }] }
+        ],
+        disableDefaultUI: true,
+        zoomControl: true,
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+        }
+    });
+    
+    routeRenderer = new google.maps.DirectionsRenderer({
+        map,
+        suppressMarkers: true,
+        polylineOptions: { 
+            strokeColor: CONFIG.markers.selected, 
+            strokeWeight: 5, 
+            strokeOpacity: 0.9 
+        }
+    });
+    
+    document.getElementById('mapPlaceholder').classList.add('hidden');
+    
+    // If we have user location from URL, mark it
+    if (state.userLocation) {
+        updateUserMarker();
+    }
+}
+
+function updateUserMarker() {
+    if (!state.userLocation || !map) return;
+    
+    if (userMarker) userMarker.setMap(null);
+    
+    userMarker = new google.maps.Marker({
+        position: state.userLocation,
+        map,
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 12,
+            fillColor: CONFIG.markers.user,
+            fillOpacity: 1,
+            strokeColor: '#050505',
+            strokeWeight: 3
+        },
+        title: 'Your Location',
+        zIndex: 1000
+    });
+    
+    map.setCenter(state.userLocation);
+}
+
+function clearMarkers() {
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+}
+
+function addPlaceMarkers() {
+    clearMarkers();
+    
+    state.places.forEach((place, index) => {
+        // Determine color: Red for open, Grey for closed/unknown
+        const isOpen = place.currentOpeningHours?.openNow;
+        const isSelected = state.selectedPlace?.place_id === place.place_id;
+        
+        // If selected, use gold, otherwise use red/grey based on open status
+        let fillColor = isSelected ? CONFIG.markers.selected : (isOpen ? CONFIG.markers.open : CONFIG.markers.closed);
+        let scale = isSelected ? 2 : 1.5;
+        let zIndex = isSelected ? 100 : 10;
+        
+        const marker = new google.maps.Marker({
+            position: place.location,
+            map,
+            title: place.displayName?.text || place.name,
+            zIndex: zIndex,
+            icon: {
+                path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+                fillColor: fillColor,
+                fillOpacity: 1,
+                strokeColor: '#050505',
+                strokeWeight: 2,
+                scale: scale,
+                anchor: new google.maps.Point(12, 22)
+            },
+            label: { 
+                text: String(index + 1), 
+                color: '#F5F5F5', 
+                fontSize: '11px', 
+                fontWeight: 'bold'
+            }
+        });
+        
+        marker.addListener('click', () => selectPlace(place));
+        markers.push(marker);
+    });
+}
+
+function selectPlace(place) {
+    state.selectedPlace = place;
+    
+    if (map && place.location) {
+        map.panTo(place.location);
+        map.setZoom(16);
+    }
+    
+    // Re-render markers to update colors
+    addPlaceMarkers();
+    
+    renderResultsList();
+    if (state.userLocation) showRoute(place);
+}
+
+async function showRoute(place) {
+    if (!state.userLocation || !routeRenderer) return;
+    
+    const directionsService = new google.maps.DirectionsService();
+    
+    try {
+        const result = await directionsService.route({
+            origin: new google.maps.LatLng(state.userLocation.lat, state.userLocation.lng),
+            destination: new google.maps.LatLng(place.location.lat, place.location.lng),
+            travelMode: state.travelMode === 'driving' ? google.maps.TravelMode.DRIVING : google.maps.TravelMode.WALKING
+        });
+        
+        routeRenderer.setDirections(result);
+        
+        const route = result.routes[0].legs[0];
+        document.getElementById('routeDistance').textContent = route.distance.text;
+        document.getElementById('routeDuration').textContent = route.duration.text;
+        document.getElementById('routeInfo').classList.remove('hidden');
+        document.getElementById('clearRouteBtn').classList.remove('hidden');
+        
+        const actualTime = route.duration.value / 60;
+        place.travelTime = actualTime;
+        place.accessibilityScore = calculateAccessibilityScore(place, actualTime);
+        renderResultsList();
+    } catch (error) {
+        console.error('Directions request failed:', error);
+        // Fallback to estimated time
+        place.travelTime = estimateTravelTime(place.distance, state.travelMode);
+        place.accessibilityScore = calculateAccessibilityScore(place, place.travelTime);
+        renderResultsList();
+    }
+}
+
+function clearRoute() {
+    if (routeRenderer) routeRenderer.setDirections({ routes: [] });
+    document.getElementById('routeInfo').classList.add('hidden');
+    document.getElementById('clearRouteBtn').classList.add('hidden');
+}
+
+// ============================================================================
+// ISOCHRONE & HEATMAP
+// ============================================================================
+
+function updateIsochrone() {
+    clearIsochrone();
+    
+    if (!state.showIsochrone || !state.userLocation || !map) return;
+    
+    const points = generateIsochronePoints(state.userLocation, state.isochroneMinutes, state.travelMode);
+    
+    isochronePolygon = new google.maps.Polygon({
+        paths: points,
+        strokeColor: CONFIG.markers.selected,
+        strokeOpacity: 0.8,
+        strokeWeight: 3,
+        fillColor: CONFIG.markers.selected,
+        fillOpacity: 0.1,
+        map
+    });
+    
+    const placesInside = state.places.filter(p => pointInPolygon(p.location, points));
+    const nearestTime = placesInside.length > 0 ? Math.min(...placesInside.map(p => p.travelTime || Infinity)) : null;
+    
+    document.getElementById('isoStatMinutes').textContent = state.isochroneMinutes;
+    document.getElementById('isoStatMode').textContent = state.travelMode;
+    document.getElementById('isoStatCount').textContent = placesInside.length;
+    document.getElementById('isoStatNearest').textContent = nearestTime ? `${Math.round(nearestTime)} min` : 'N/A';
+    document.getElementById('isochroneStats').classList.remove('hidden');
+}
+
+function clearIsochrone() {
+    if (isochronePolygon) {
+        isochronePolygon.setMap(null);
+        isochronePolygon = null;
+    }
+    document.getElementById('isochroneStats').classList.add('hidden');
+}
+
+function updateHeatmap() {
+    clearHeatmap();
+    
+    if (!state.showHeatmap || !state.userLocation || !map || state.places.length === 0) return;
+    
+    showLoading('Computing accessibility heatmap...');
+    
+    const bounds = map.getBounds();
+    if (!bounds) { hideLoading(); return; }
+    
+    const ne = bounds.getNorthEast();
+    const sw = bounds.getSouthWest();
+    const resolution = CONFIG.heatmapResolutions[state.heatmapResolution];
+    
+    setTimeout(() => {
+        for (let lat = sw.lat(); lat < ne.lat(); lat += resolution) {
+            for (let lng = sw.lng(); lng < ne.lng(); lng += resolution) {
+                const cacheKey = `${lat.toFixed(5)}_${lng.toFixed(5)}_${state.travelMode}`;
+                
+                let minTime;
+                if (heatmapCache.has(cacheKey)) {
+                    minTime = heatmapCache.get(cacheKey);
+                } else {
+                    let nearestDist = Infinity;
+                    for (const place of state.places) {
+                        const dist = calculateDistance(lat, lng, place.location.lat, place.location.lng);
+                        if (dist < nearestDist) nearestDist = dist;
+                    }
+                    minTime = estimateTravelTime(nearestDist, state.travelMode);
+                    heatmapCache.set(cacheKey, minTime);
+                }
+                
+                const rect = new google.maps.Rectangle({
+                    bounds: { north: lat + resolution, south: lat, east: lng + resolution, west: lng },
+                    strokeColor: 'transparent',
+                    strokeOpacity: 0,
+                    strokeWeight: 0,
+                    fillColor: getHeatmapColor(minTime),
+                    fillOpacity: 0.4,
+                    map,
+                    clickable: false
+                });
+                heatmapRects.push(rect);
+            }
+        }
+        hideLoading();
+    }, 10);
+}
+
+function clearHeatmap() {
+    heatmapRects.forEach(r => r.setMap(null));
+    heatmapRects = [];
+}
+
+// ============================================================================
+// LOCATION & SEARCH
+// ============================================================================
+
+function useMyLocation() {
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser');
+        return;
+    }
+    
+    showLoading('Getting your location...');
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            state.userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+            updateLocationStatus(`${state.userLocation.lat.toFixed(4)}, ${state.userLocation.lng.toFixed(4)}`, true);
+            updateUserMarker();
+            hideLoading();
+            
+            // Auto search if we have places already
+            if (state.places.length === 0 && state.mapsLoaded) {
+                searchPlaces();
+            }
+        },
+        (error) => {
+            console.error('Geolocation error:', error);
+            alert('Unable to retrieve your location. Please ensure location services are enabled.');
+            hideLoading();
+        }
+    );
+}
+
+function geocodeAddress() {
+    const address = document.getElementById('addressInput').value.trim();
+    if (!address || !window.google) {
+        alert('Please enter an address and ensure the map is loaded');
+        return;
+    }
+    
+    showLoading('Finding address...');
+    
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+            const location = results[0].geometry.location;
+            state.userLocation = { lat: location.lat(), lng: location.lng() };
+            updateLocationStatus(results[0].formatted_address, true);
+            updateUserMarker();
+            hideLoading();
+            
+            // Auto search
+            if (state.places.length === 0) {
+                searchPlaces();
+            }
+        } else {
+            alert('Could not find that location. Please try a different address.');
+            hideLoading();
+        }
+    });
+}
+
+function searchPlaces() {
+    if (!state.userLocation || !window.google) {
+        alert('Please set your location first using the search box or "Use My Location" button');
+        return;
+    }
+    
+    showLoading('Searching for restaurants...');
+    clearMarkers();
+    clearHeatmap();
+    clearIsochrone();
+    
+    const service = new google.maps.places.PlacesService(map);
+    
+    service.nearbySearch({
+        location: new google.maps.LatLng(state.userLocation.lat, state.userLocation.lng),
+        radius: state.filters.maxDistance * 1000,
+        type: 'restaurant',
+        keyword: 'fast food'
+    }, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+            let processed = results.map(place => {
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+                const distance = calculateDistance(state.userLocation.lat, state.userLocation.lng, lat, lng);
+                const travelTime = estimateTravelTime(distance, state.travelMode);
+                
+                const placeData = {
+                    place_id: place.place_id,
+                    name: place.name,
+                    displayName: { text: place.name },
+                    formattedAddress: place.vicinity,
+                    currentOpeningHours: { openNow: place.opening_hours?.open_now },
+                    priceLevel: place.price_level,
+                    userRatingCount: place.user_ratings_total,
+                    rating: place.rating,
+                    location: { lat, lng },
+                    distance,
+                    travelTime
+                };
+                placeData.accessibilityScore = calculateAccessibilityScore(placeData, travelTime);
+                return placeData;
+            });
+            
+            processed = processed.filter(place => {
+                if (state.filters.minRating > 0 && (!place.rating || place.rating < state.filters.minRating)) return false;
+                if (place.distance > state.filters.maxDistance) return false;
+                if (state.filters.priceLevel && place.priceLevel !== parseInt(state.filters.priceLevel)) return false;
+                if (state.filters.openNow && !place.currentOpeningHours?.openNow) return false;
+                return true;
+            });
+            
+            processed.sort((a, b) => (b.accessibilityScore?.total || 0) - (a.accessibilityScore?.total || 0));
+            processed = processed.slice(0, 30);
+            
+            state.places = processed;
+            updateResultsCount(processed.length);
+            addPlaceMarkers();
+            renderResultsList();
+            
+            if (state.showIsochrone) updateIsochrone();
+            if (state.showHeatmap) updateHeatmap();
+        } else {
+            state.places = [];
+            updateResultsCount(0);
+            renderResultsList();
+            alert('No restaurants found in this area. Try increasing the distance or changing location.');
+        }
+        hideLoading();
+    });
+}
+
+// ============================================================================
+// API KEY HANDLING
+// ============================================================================
+
+function loadGoogleMapsAPI(key) {
+    return new Promise((resolve, reject) => {
+        if (window.google && window.google.maps) {
+            resolve();
+            return;
+        }
+        
+        // Set a timeout to detect if the script fails to load
+        const timeoutId = setTimeout(() => {
+            reject(new Error('Timeout loading Google Maps API'));
+        }, 10000);
+        
+        window.initMapCallback = () => {
+            clearTimeout(timeoutId);
+            resolve();
+        };
+        
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,geometry&callback=initMapCallback&v=weekly&loading=async`;
+        script.async = true;
+        script.defer = true;
+        script.onerror = () => {
+            clearTimeout(timeoutId);
+            reject(new Error('Failed to load Google Maps API script'));
+        };
+        document.head.appendChild(script);
+    });
+}
+
+async function submitApiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (!key) {
+        document.getElementById('apiError').textContent = 'Please enter an API key';
+        document.getElementById('apiError').classList.remove('hidden');
+        return;
+    }
+    
+    showLoading('Initializing Google Maps...');
+    
+    try {
+        await loadGoogleMapsAPI(key);
+        localStorage.setItem('googleMapsApiKey', key);
+        state.apiKey = key;
+        state.mapsLoaded = true;
+        updateApiStatus(true);
+        document.getElementById('apiModal').classList.add('hidden');
+        initMap();
+        renderResultsList(); // Update the "enter API key" message
+        hideLoading();
+    } catch (error) {
+        console.error('Failed to load Google Maps:', error);
+        document.getElementById('apiError').textContent = 'Failed to initialize. Please check your API key and ensure all required APIs are enabled.';
+        document.getElementById('apiError').classList.remove('hidden');
+        hideLoading();
+    }
+}
+
+function skipApiKey() {
+    // Just hide the modal but keep functionality disabled
+    document.getElementById('apiModal').classList.add('hidden');
+    // Show a message that API is needed
+    renderResultsList();
+}
+
+// ============================================================================
+// EVENT LISTENERS
+// ============================================================================
+
+function initEventListeners() {
+    // API Modal
+    document.getElementById('submitApiKey').addEventListener('click', submitApiKey);
+    document.getElementById('skipApiKey').addEventListener('click', skipApiKey);
+    document.getElementById('apiKeyInput').addEventListener('keydown', (e) => { 
+        if (e.key === 'Enter') submitApiKey(); 
+    });
+    document.getElementById('clearSavedKey').addEventListener('click', () => {
+        localStorage.removeItem('googleMapsApiKey');
+        state.apiKey = '';
+        document.getElementById('apiKeyInput').value = '';
+        document.getElementById('clearSavedKey').classList.add('hidden');
+        document.getElementById('apiError').classList.add('hidden');
+        document.getElementById('apiModal').classList.remove('hidden');
+    });
+    
+    // API Status button - click to re-open API modal
+    document.getElementById('apiStatusBtn').addEventListener('click', () => {
+        document.getElementById('apiModal').classList.remove('hidden');
+        document.getElementById('apiError').classList.add('hidden');
+        // Show clear button if there's a saved key
+        if (localStorage.getItem('googleMapsApiKey')) {
+            document.getElementById('clearSavedKey').classList.remove('hidden');
+            document.getElementById('apiKeyInput').value = '••••••••••••••••••••••••••';
+        } else {
+            document.getElementById('clearSavedKey').classList.add('hidden');
+            document.getElementById('apiKeyInput').value = '';
+        }
+    });
+    
+    // Info Modal
+    document.getElementById('infoBtn').addEventListener('click', () => document.getElementById('infoModal').classList.remove('hidden'));
+    document.getElementById('closeInfoModal').addEventListener('click', () => document.getElementById('infoModal').classList.add('hidden'));
+    document.getElementById('infoModal').addEventListener('click', (e) => { 
+        if (e.target === document.getElementById('infoModal')) document.getElementById('infoModal').classList.add('hidden'); 
+    });
+    
+    // Location
+    document.getElementById('useLocationBtn').addEventListener('click', useMyLocation);
+    document.getElementById('searchAddressBtn').addEventListener('click', geocodeAddress);
+    document.getElementById('addressInput').addEventListener('keydown', (e) => { 
+        if (e.key === 'Enter') geocodeAddress(); 
+    });
+    
+    // Filters
+    document.getElementById('ratingFilter').addEventListener('input', (e) => {
+        state.filters.minRating = parseFloat(e.target.value);
+        document.getElementById('ratingValue').textContent = state.filters.minRating || 'Any';
+    });
+    document.getElementById('distanceFilter').addEventListener('input', (e) => {
+        state.filters.maxDistance = parseFloat(e.target.value);
+        document.getElementById('distanceValue').textContent = `${state.filters.maxDistance}km`;
+    });
+    document.getElementById('priceFilter').addEventListener('change', (e) => { 
+        state.filters.priceLevel = e.target.value; 
+    });
+    document.getElementById('openNowFilter').addEventListener('change', (e) => { 
+        state.filters.openNow = e.target.checked; 
+    });
+    document.getElementById('searchBtn').addEventListener('click', searchPlaces);
+    
+    // Panels
+    document.getElementById('layersPanelToggle').addEventListener('click', () => togglePanel('layersPanel'));
+    document.getElementById('exportPanelToggle').addEventListener('click', () => togglePanel('exportPanel'));
+    
+    // Travel Mode
+    document.getElementById('walkModeBtn').addEventListener('click', () => {
+        state.travelMode = 'walking';
+        document.getElementById('walkModeBtn').classList.add('active');
+        document.getElementById('driveModeBtn').classList.remove('active');
+        updateTravelTimes();
+    });
+    document.getElementById('driveModeBtn').addEventListener('click', () => {
+        state.travelMode = 'driving';
+        document.getElementById('driveModeBtn').classList.add('active');
+        document.getElementById('walkModeBtn').classList.remove('active');
+        updateTravelTimes();
+    });
+    
+    // Isochrone
+    document.getElementById('isochroneToggle').addEventListener('click', (e) => {
+        state.showIsochrone = !state.showIsochrone;
+        e.target.classList.toggle('active', state.showIsochrone);
+        document.getElementById('isochroneOptions').classList.toggle('hidden', !state.showIsochrone);
+        updateIsochrone();
+    });
+    document.querySelectorAll('#isochroneOptions .btn-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#isochroneOptions .btn-option').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.isochroneMinutes = parseInt(btn.dataset.min);
+            updateIsochrone();
+        });
+    });
+    
+    // Heatmap
+    document.getElementById('heatmapToggle').addEventListener('click', (e) => {
+        state.showHeatmap = !state.showHeatmap;
+        e.target.classList.toggle('active', state.showHeatmap);
+        document.getElementById('heatmapOptions').classList.toggle('hidden', !state.showHeatmap);
+        if (state.showHeatmap) updateHeatmap();
+        else clearHeatmap();
+    });
+    document.querySelectorAll('#heatmapOptions .btn-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#heatmapOptions .btn-option').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.heatmapResolution = btn.dataset.res;
+            updateHeatmap();
+        });
+    });
+    
+    // Export
+    document.getElementById('exportCsvBtn').addEventListener('click', exportToCSV);
+    document.getElementById('exportGeoJsonBtn').addEventListener('click', exportToGeoJSON);
+    document.getElementById('copyShareLinkBtn').addEventListener('click', copyShareLink);
+    
+    // Map Controls
+    document.getElementById('recenterBtn').addEventListener('click', () => {
+        if (map && state.userLocation) {
+            map.panTo(state.userLocation);
+            map.setZoom(15);
+        } else {
+            alert('Please set your location first');
+        }
+    });
+    document.getElementById('compareToggleBtn').addEventListener('click', () => toggleComparePanel());
+    document.getElementById('closeCompareBtn').addEventListener('click', () => toggleComparePanel(false));
+    document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
+}
+
+function updateTravelTimes() {
+    if (state.places.length === 0) return;
+    
+    state.places = state.places.map(place => {
+        const travelTime = estimateTravelTime(place.distance, state.travelMode);
+        return {
+            ...place,
+            travelTime,
+            accessibilityScore: calculateAccessibilityScore({ ...place, travelTime }, travelTime)
+        };
+    });
+    
+    state.places.sort((a, b) => (b.accessibilityScore?.total || 0) - (a.accessibilityScore?.total || 0));
+    renderResultsList();
+    
+    if (state.showIsochrone) updateIsochrone();
+    if (state.showHeatmap) updateHeatmap();
+    
+    // Update route if active
+    if (state.selectedPlace && routeRenderer) {
+        showRoute(state.selectedPlace);
+    }
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+function init() {
+    lucide.createIcons();
+    loadStateFromURL();
+    initEventListeners();
+    
+    // Update filter UI from state
+    document.getElementById('ratingFilter').value = state.filters.minRating;
+    document.getElementById('ratingValue').textContent = state.filters.minRating || 'Any';
+    document.getElementById('distanceFilter').value = state.filters.maxDistance;
+    document.getElementById('distanceValue').textContent = `${state.filters.maxDistance}km`;
+    document.getElementById('priceFilter').value = state.filters.priceLevel;
+    document.getElementById('openNowFilter').checked = state.filters.openNow;
+    
+    // Update travel mode UI
+    if (state.travelMode === 'driving') {
+        document.getElementById('driveModeBtn').classList.add('active');
+        document.getElementById('walkModeBtn').classList.remove('active');
+    }
+    
+    // Check for saved API key
+    if (state.apiKey) {
+        // Show the modal with the masked key and a "reset" option
+        document.getElementById('apiKeyInput').value = '••••••••••••••••••••••••••';
+        document.getElementById('clearSavedKey').classList.remove('hidden');
+        document.getElementById('apiError').classList.add('hidden');
+        
+        // Try to load it automatically
+        loadGoogleMapsAPI(state.apiKey)
+            .then(() => {
+                state.mapsLoaded = true;
+                updateApiStatus(true);
+                document.getElementById('apiModal').classList.add('hidden');
+                initMap();
+                
+                if (state.userLocation) {
+                    updateUserMarker();
+                    updateLocationStatus('From shared link', true);
+                }
+            })
+            .catch(() => {
+                // Clear invalid key from localStorage
+                localStorage.removeItem('googleMapsApiKey');
+                state.apiKey = '';
+                document.getElementById('apiKeyInput').value = '';
+                document.getElementById('clearSavedKey').classList.add('hidden');
+                document.getElementById('apiError').textContent = 'Previous API key invalid. Please enter a new key.';
+                document.getElementById('apiError').classList.remove('hidden');
+                // Modal stays visible
+            });
+    } else {
+        // No saved key - ensure modal is visible (it should be by default in HTML)
+        document.getElementById('apiModal').classList.remove('hidden');
+        document.getElementById('clearSavedKey').classList.add('hidden');
+    }
+    
+    // Initial render of results list
+    renderResultsList();
+}
+
+// Start the application
+document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
